@@ -1,0 +1,53 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Sample 2D data points
+X = np.array([[1, 2],
+              [1, 4],
+              [1, 0],
+              [4, 2],
+              [4, 4],
+              [4, 0]])
+
+# Number of clusters
+k = 2
+
+# Initialize centroids randomly (choose first k points)
+centroids = X[:k].astype(float)
+
+# Function to compute Euclidean distance
+def euclidean_distance(a, b):
+    return np.sqrt(np.sum((a - b)**2))
+
+# k-Means algorithm
+for iteration in range(10):  # max iterations
+    # Step 1: Assign points to nearest centroid
+    clusters = []
+    for x in X:
+        distances = [euclidean_distance(x, c) for c in centroids]
+        cluster_idx = np.argmin(distances)
+        clusters.append(cluster_idx)
+    clusters = np.array(clusters)
+    
+    # Step 2: Update centroids
+    new_centroids = np.array([X[clusters == i].mean(axis=0) for i in range(k)])
+    
+    # Check for convergence
+    if np.all(centroids == new_centroids):
+        break
+    centroids = new_centroids
+
+# Print final centroids and cluster assignments
+print("Final centroids:\n", centroids)
+print("Cluster assignments:", clusters)
+
+# Plot clusters
+colors = ['r', 'b', 'g', 'c', 'm', 'y']
+for i in range(k):
+    plt.scatter(X[clusters == i][:,0], X[clusters == i][:,1], c=colors[i], label=f'Cluster {i+1}')
+plt.scatter(centroids[:,0], centroids[:,1], c='k', marker='X', s=200, label='Centroids')
+plt.title("k-Means Clustering")
+plt.xlabel("X1")
+plt.ylabel("X2")
+plt.legend()
+plt.show()

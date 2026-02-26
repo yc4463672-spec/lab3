@@ -1,0 +1,64 @@
+import numpy as np
+
+# Sigmoid activation function
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+
+# Derivative of sigmoid
+def sigmoid_derivative(x):
+    return x * (1 - x)
+
+# XOR inputs and outputs
+X = np.array([[0,0],
+              [0,1],
+              [1,0],
+              [1,1]])
+
+y = np.array([[0],
+              [1],
+              [1],
+              [0]])
+
+# Initialize weights randomly
+np.random.seed(42)
+input_layer_neurons = 2
+hidden_layer_neurons = 2
+output_neurons = 1
+
+# weights and biases
+wh = np.random.uniform(size=(input_layer_neurons, hidden_layer_neurons))
+bh = np.random.uniform(size=(1, hidden_layer_neurons))
+wout = np.random.uniform(size=(hidden_layer_neurons, output_neurons))
+bout = np.random.uniform(size=(1, output_neurons))
+
+# Training parameters
+lr = 0.1
+epochs = 10000
+
+# Training loop
+for epoch in range(epochs):
+    # Forward pass
+    hidden_input = np.dot(X, wh) + bh
+    hidden_output = sigmoid(hidden_input)
+
+    final_input = np.dot(hidden_output, wout) + bout
+    final_output = sigmoid(final_input)
+
+    # Backpropagation
+    error = y - final_output
+    d_output = error * sigmoid_derivative(final_output)
+    error_hidden = d_output.dot(wout.T)
+    d_hidden = error_hidden * sigmoid_derivative(hidden_output)
+
+    # Update weights and biases
+    wout += hidden_output.T.dot(d_output) * lr
+    bout += np.sum(d_output, axis=0, keepdims=True) * lr
+    wh += X.T.dot(d_hidden) * lr
+    bh += np.sum(d_hidden, axis=0, keepdims=True) * lr
+
+# Testing
+print("Trained XOR MLP Output:")
+for i in range(len(X)):
+    hidden = sigmoid(np.dot(X[i], wh) + bh)
+    output = sigmoid(np.dot(hidden, wout) + bout)
+    print(f"Input: {X[i]}, Output: {round(output[0])}")XOR

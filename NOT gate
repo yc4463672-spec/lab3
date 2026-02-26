@@ -1,0 +1,33 @@
+import numpy as np
+
+# NOT gate input and output
+X = np.array([[0],
+              [1]])
+
+y = np.array([1, 0])
+
+# Initialize weight and bias
+weight = 0.0
+bias = 0.0
+learning_rate = 0.1
+epochs = 10
+
+# Training loop
+for epoch in range(epochs):
+    print(f"Epoch {epoch+1}")
+    for i in range(len(X)):
+        linear_output = weight * X[i] + bias
+        y_pred = 1 if linear_output >= 0 else 0
+        # Update rule
+        update = learning_rate * (y[i] - y_pred)
+        weight += update * X[i]
+        bias += update
+        print(f"Input: {X[i][0]}, Target: {y[i]}, Predicted: {y_pred}, Weight: {weight}, Bias: {bias}")
+    print("-"*40)
+
+# Testing
+print("\nTrained Perceptron for NOT Gate")
+for i in range(len(X)):
+    linear_output = weight * X[i] + bias
+    y_pred = 1 if linear_output >= 0 else 0
+    print(f"Input: {X[i][0]}, Predicted Output: {y_pred}")

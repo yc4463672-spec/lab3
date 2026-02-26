@@ -1,0 +1,39 @@
+import numpy as np
+from collections import Counter
+
+# Sample training data (2D points)
+X_train = np.array([[1, 2],
+                    [2, 3],
+                    [3, 3],
+                    [6, 5],
+                    [7, 7],
+                    [8, 6]])
+
+y_train = np.array([0, 0, 0, 1, 1, 1])  # Class labels
+
+# Test point
+X_test = np.array([5, 5])
+
+# Function to calculate Euclidean distance
+def euclidean_distance(a, b):
+    return np.sqrt(np.sum((a - b)**2))
+
+# kNN algorithm
+def kNN(X_train, y_train, X_test, k=3):
+    distances = []
+    for i in range(len(X_train)):
+        dist = euclidean_distance(X_train[i], X_test)
+        distances.append((dist, y_train[i]))
+    
+    # Sort distances and select k nearest neighbors
+    distances.sort(key=lambda x: x[0])
+    neighbors = distances[:k]
+    
+    # Get the majority class among neighbors
+    classes = [label for _, label in neighbors]
+    most_common = Counter(classes).most_common(1)
+    return most_common[0][0]
+
+# Predict the class for the test point
+predicted_class = kNN(X_train, y_train, X_test, k=3)
+print(f"Test Point: {X_test}, Predicted Class: {predicted_class}")

@@ -1,0 +1,35 @@
+import numpy as np
+
+# AND gate inputs and outputs
+X = np.array([[0,0],
+              [0,1],
+              [1,0],
+              [1,1]])
+
+y = np.array([0,0,0,1])
+
+# Initialize weights and bias
+weights = np.zeros(2)
+bias = 0
+learning_rate = 0.1
+epochs = 10
+
+# Perceptron Training
+for epoch in range(epochs):
+    print(f"Epoch {epoch+1}")
+    for i in range(len(X)):
+        linear_output = np.dot(X[i], weights) + bias
+        y_pred = 1 if linear_output >= 0 else 0
+        # Update weights and bias
+        update = learning_rate * (y[i] - y_pred)
+        weights += update * X[i]
+        bias += update
+        print(f"Input: {X[i]}, Target: {y[i]}, Predicted: {y_pred}, Weights: {weights}, Bias: {bias}")
+    print("-"*40)
+
+# Testing
+print("\nTrained Perceptron for AND Gate")
+for i in range(len(X)):
+    linear_output = np.dot(X[i], weights) + bias
+    y_pred = 1 if linear_output >= 0 else 0
+    print(f"Input: {X[i]}, Predicted Output: {y_pred}")

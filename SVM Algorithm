@@ -1,0 +1,47 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn import svm
+
+# Sample data (2D points)
+X = np.array([[1, 2],
+              [2, 3],
+              [3, 3],
+              [6, 5],
+              [7, 7],
+              [8, 6]])
+y = np.array([0, 0, 0, 1, 1, 1])  # Class labels
+
+# Create SVM classifier with linear kernel
+clf = svm.SVC(kernel='linear')
+clf.fit(X, y)  # Train SVM
+
+# Test predictions
+test_points = np.array([[4, 4],
+                        [5, 6]])
+predictions = clf.predict(test_points)
+
+for i, point in enumerate(test_points):
+    print(f"Test Point: {point}, Predicted Class: {predictions[i]}")
+
+# Plot data and decision boundary
+plt.scatter(X[:,0], X[:,1], c=y, s=100, cmap='coolwarm', edgecolors='k')
+
+# Plot support vectors
+plt.scatter(clf.support_vectors_[:,0], clf.support_vectors_[:,1], s=150, facecolors='none', edgecolors='k', label='Support Vectors')
+
+# Create grid to plot decision boundary
+xx = np.linspace(0, 9, 100)
+yy = np.linspace(0, 9, 100)
+YY, XX = np.meshgrid(yy, xx)
+xy = np.vstack([XX.ravel(), YY.ravel()]).T
+Z = clf.decision_function(xy).reshape(XX.shape)
+
+# Plot decision boundary and margins
+plt.contour(XX, YY, Z, colors='k', levels=[0], alpha=0.5, linestyles=['-'])
+plt.contour(XX, YY, Z, colors='k', levels=[-1,1], alpha=0.5, linestyles=['--','--'])
+
+plt.title("SVM Classification and Decision Boundary")
+plt.xlabel("X1")
+plt.ylabel("X2")
+plt.legend()
+plt.show()
